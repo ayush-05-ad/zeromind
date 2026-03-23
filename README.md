@@ -443,7 +443,7 @@ npm run test
 
 | Name | Role | Responsibilities |
 |------|------|-----------------|
-| **Ayush** | Project Lead + AI Engineer | Agent system, LLM integration, tool development |
+| **Ayush Deep** | Project Lead + AI Engineer | Agent system, LLM integration, tool development |
 | **Sneha Kumari** | Frontend Developer | React dashboard, agent visualization, WebSocket UI |
 | **Annu Priya** | Backend Developer | FastAPI APIs, authentication, WebSocket handler |
 | **Nikhil Kumar** | DevOps + DB Engineer | PostgreSQL, Redis, Docker, deployment, CI/CD |
