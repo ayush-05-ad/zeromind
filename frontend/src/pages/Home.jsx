@@ -1,328 +1,245 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-import { Brain, Zap, Shield, BookOpen, Code, Search, BarChart3, FileText, Sun, Moon, ArrowRight, Sparkles, Bot, Users, ChevronDown, ExternalLink } from 'lucide-react';
+import { Sun, Moon, ArrowRight, ExternalLink, ChevronDown } from 'lucide-react';
 
 const agents = [
-  { name: 'Orchestrator', icon: '🎯', desc: 'Plans & coordinates', color: '#8b5cf6' },
-  { name: 'Researcher', icon: '🔍', desc: 'Web search & data', color: '#3b82f6' },
-  { name: 'Coder', icon: '💻', desc: 'Write & debug code', color: '#10b981' },
-  { name: 'Analyzer', icon: '📊', desc: 'Data analysis', color: '#f59e0b' },
-  { name: 'Writer', icon: '✍️', desc: 'Reports & content', color: '#ec4899' },
-  { name: 'Study Helper', icon: '📚', desc: 'Notes & quizzes', color: '#06b6d4' },
-  { name: 'Reviewer', icon: '✅', desc: 'Quality check', color: '#ef4444' },
+  { name:'Orchestrator', emoji:'🎯', desc:'Plans & assigns tasks', color:'#06b6d4' },
+  { name:'Researcher', emoji:'🔍', desc:'Searches the web', color:'#3b82f6' },
+  { name:'Coder', emoji:'💻', desc:'Writes & debugs code', color:'#10b981' },
+  { name:'Analyzer', emoji:'📊', desc:'Finds patterns in data', color:'#eab308' },
+  { name:'Writer', emoji:'✍️', desc:'Creates polished content', color:'#ec4899' },
+  { name:'Study Helper', emoji:'📚', desc:'Notes, quizzes, plans', color:'#8b5cf6' },
+  { name:'Reviewer', emoji:'✅', desc:'Final quality check', color:'#f43f5e' },
 ];
 
-const features = [
-  { icon: <Bot size={22} />, title: '7 AI Agents', desc: 'Specialized agents collaborate like a real team' },
-  { icon: <Zap size={22} />, title: 'Zero Cost', desc: 'Free AI models — Gemini & Groq, no credit card' },
-  { icon: <Shield size={22} />, title: 'Secure Auth', desc: 'JWT authentication with role-based access' },
-  { icon: <BookOpen size={22} />, title: 'Student Focused', desc: 'Notes, quizzes, study plans, placement prep' },
-  { icon: <Sparkles size={22} />, title: 'Real-time', desc: 'Watch agents work live on your dashboard' },
-  { icon: <Users size={22} />, title: 'Multi-role', desc: 'User & Admin dashboards with analytics' },
+const steps = [
+  { n:'01', title:'Describe your task', desc:'Type what you need — notes, code, research, anything' },
+  { n:'02', title:'Agents collaborate', desc:'Multiple AI specialists work together automatically' },
+  { n:'03', title:'Get polished output', desc:'Reviewed, formatted, ready-to-use result in seconds' },
 ];
 
 const useCases = [
-  { emoji: '📝', text: 'Create notes on DBMS normalization' },
-  { emoji: '💻', text: 'Write a Python REST API with auth' },
-  { emoji: '🔍', text: 'Research latest AI trends in 2026' },
-  { emoji: '📊', text: 'Compare React vs Angular vs Vue' },
-  { emoji: '📧', text: 'Draft email to my professor' },
-  { emoji: '🎯', text: 'Generate 20 MCQs on OOP in Java' },
-  { emoji: '📅', text: 'Create 7-day study plan for GATE' },
-  { emoji: '🧑‍💻', text: 'Help me prepare for TCS NQT' },
+  { cat:'Study', items:['Create notes on DBMS normalization','Generate 20 MCQs on OOP in Java','Make a 7-day study plan for GATE'] },
+  { cat:'Code', items:['Write a Flask REST API with auth','Debug my Python sorting algorithm','Build a React login component'] },
+  { cat:'Research', items:['Latest AI trends in 2026','Compare React vs Vue vs Angular','Summarize a research paper'] },
+  { cat:'Content', items:['Draft email to professor','Write project abstract','Create LinkedIn post about my project'] },
 ];
 
-const techStack = ['React.js', 'FastAPI', 'Python', 'Tailwind CSS', 'PostgreSQL', 'SQLite', 'Redis', 'Gemini AI', 'Groq AI', 'JWT Auth', 'Docker', 'WebSocket'];
+const tech = ['React','FastAPI','Python','Tailwind CSS','PostgreSQL','Redis','Gemini AI','Groq AI','JWT Auth','Docker','WebSocket','DuckDuckGo API'];
 
-function AnimatedCounter({ end, duration = 2000 }) {
-  const [count, setCount] = useState(0);
+function Counter({ end, suffix='' }) {
+  const [n, setN] = useState(0);
   useEffect(() => {
-    let start = 0;
-    const step = end / (duration / 16);
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= end) { setCount(end); clearInterval(timer); }
-      else setCount(Math.floor(start));
-    }, 16);
-    return () => clearInterval(timer);
-  }, [end, duration]);
-  return <span>{count}</span>;
-}
-
-function FloatingParticle({ delay, size, x, y }) {
-  return (
-    <div
-      className="absolute rounded-full pointer-events-none"
-      style={{
-        width: size, height: size,
-        left: `${x}%`, top: `${y}%`,
-        background: 'var(--accent)',
-        opacity: 0.06,
-        animation: `float ${4 + delay}s ease-in-out infinite`,
-        animationDelay: `${delay}s`,
-        filter: 'blur(1px)'
-      }}
-    />
-  );
+    let i = 0;
+    const t = setInterval(() => { i += Math.ceil(end/30); if(i>=end){setN(end);clearInterval(t)}else setN(i); }, 30);
+    return () => clearInterval(t);
+  }, [end]);
+  return <>{n}{suffix}</>;
 }
 
 export default function Home() {
   const { theme, toggle } = useTheme();
   const [activeAgent, setActiveAgent] = useState(0);
+  const [activeCat, setActiveCat] = useState(0);
 
   useEffect(() => {
-    const iv = setInterval(() => setActiveAgent(p => (p + 1) % agents.length), 2000);
+    const iv = setInterval(() => setActiveAgent(p => (p+1) % agents.length), 2200);
     return () => clearInterval(iv);
   }, []);
 
-  return (
-    <div style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+  const S = (styles) => styles; // just for readability
 
-      {/* ===== NAVBAR ===== */}
-      <nav className="fixed top-0 w-full z-50 glass" style={{ padding: '14px 24px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Brain size={26} style={{ color: 'var(--accent)' }} />
-            <span style={{ fontSize: 20, fontWeight: 800 }}>ZeroMind</span>
+  return (
+    <div style={{ background:'var(--bg-0)', color:'var(--text-0)', minHeight:'100vh' }}>
+
+      {/* ── NAV ── */}
+      <nav className="glass" style={{ position:'fixed', top:0, width:'100%', zIndex:50, padding:'12px 20px' }}>
+        <div style={{ maxWidth:1140, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <div style={{ width:32, height:32, borderRadius:8, background:'linear-gradient(135deg, var(--accent), var(--purple))', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16, fontWeight:800, color:'#fff' }}>Z</div>
+            <span style={{ fontSize:18, fontWeight:700, letterSpacing:'-0.02em' }}>ZeroMind</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button onClick={toggle} style={{ padding: 8, borderRadius: 10, background: 'var(--bg-card)', border: 'none', cursor: 'pointer', display: 'flex' }}>
-              {theme === 'dark' ? <Sun size={16} style={{ color: '#f59e0b' }} /> : <Moon size={16} style={{ color: 'var(--accent)' }} />}
+          <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <button onClick={toggle} style={{ width:36, height:36, borderRadius:8, background:'var(--bg-2)', border:'1px solid var(--border)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
+              {theme==='dark' ? <Sun size={15} color="#eab308"/> : <Moon size={15} color="var(--accent)"/>}
             </button>
-            <Link to="/login" style={{ padding: '8px 20px', borderRadius: 10, fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', background: 'var(--bg-card)', border: '1px solid var(--border)', textDecoration: 'none' }}>
-              Login
-            </Link>
-            <Link to="/register" style={{ padding: '8px 20px', borderRadius: 10, fontSize: 14, fontWeight: 700, color: '#fff', background: 'var(--accent)', textDecoration: 'none' }}>
-              Get Started
-            </Link>
+            <Link to="/login" style={{ padding:'8px 18px', borderRadius:8, fontSize:13, fontWeight:500, color:'var(--text-1)', background:'var(--bg-2)', border:'1px solid var(--border)' }}>Log in</Link>
+            <Link to="/register" style={{ padding:'8px 18px', borderRadius:8, fontSize:13, fontWeight:600, color:'#fff', background:'var(--accent)' }}>Sign up</Link>
           </div>
         </div>
       </nav>
 
-      {/* ===== HERO ===== */}
-      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', paddingTop: 80 }}>
-        {/* Floating particles */}
-        <FloatingParticle delay={0} size={200} x={5} y={10} />
-        <FloatingParticle delay={1.5} size={300} x={75} y={15} />
-        <FloatingParticle delay={3} size={180} x={40} y={70} />
-        <FloatingParticle delay={2} size={250} x={85} y={60} />
-        <FloatingParticle delay={0.5} size={150} x={15} y={80} />
-
-        <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', padding: '0 20px', maxWidth: 800, margin: '0 auto' }}>
-          {/* Badge */}
-          <div className="animate-slide-up" style={{ marginBottom: 32 }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 18px', borderRadius: 50, fontSize: 13, fontWeight: 500, background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--accent-light)' }}>
-              <Sparkles size={13} /> #1 AI Trend of 2026 — Agentic AI
+      {/* ── HERO ── */}
+      <section className="mesh-bg" style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', paddingTop:80 }}>
+        <div style={{ position:'relative', zIndex:1, textAlign:'center', padding:'0 20px', maxWidth:720, margin:'0 auto' }}>
+          <div className="anim-slide-up" style={{ marginBottom:28 }}>
+            <span style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'6px 14px', borderRadius:100, fontSize:12, fontWeight:500, background:'var(--bg-2)', border:'1px solid var(--border)', color:'var(--accent-2)' }}>
+              ✦ The #1 AI trend of 2026 — Agentic AI
             </span>
           </div>
 
-          {/* Title */}
-          <h1 className="animate-slide-up delay-1" style={{ fontSize: 'clamp(48px, 8vw, 88px)', fontWeight: 900, lineHeight: 1.05, marginBottom: 20 }}>
-            <span className="gradient-text">Zero</span><span>Mind</span>
+          <h1 className="anim-slide-up d1" style={{ fontSize:'clamp(44px, 7vw, 80px)', fontWeight:800, lineHeight:1.05, letterSpacing:'-0.03em', marginBottom:18 }}>
+            Multiple AI minds<br/><span className="grad-text">working for you</span>
           </h1>
 
-          {/* Tagline */}
-          <p className="animate-slide-up delay-2" style={{ fontSize: 'clamp(16px, 2.5vw, 22px)', fontWeight: 300, color: 'var(--text-secondary)', marginBottom: 12 }}>
-            Zero Cost · Multiple Minds · Infinite Possibilities
+          <p className="anim-slide-up d2" style={{ fontSize:'clamp(15px, 2vw, 18px)', color:'var(--text-2)', maxWidth:500, margin:'0 auto 36px', lineHeight:1.65 }}>
+            ZeroMind orchestrates 7 specialized AI agents that collaborate to research, code, analyze, write & help you study — completely free.
           </p>
 
-          {/* Description */}
-          <p className="animate-slide-up delay-3" style={{ fontSize: 15, color: 'var(--text-muted)', maxWidth: 550, margin: '0 auto 40px', lineHeight: 1.7 }}>
-            7 specialized AI agents collaborate autonomously to research, code, analyze, write & help you study — completely free.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="animate-slide-up delay-4" style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 32px', borderRadius: 14, fontSize: 16, fontWeight: 700, color: '#fff', background: 'var(--accent)', textDecoration: 'none', boxShadow: '0 4px 30px var(--accent-glow)', transition: 'transform 0.2s' }}>
-              Start Free <ArrowRight size={18} />
+          <div className="anim-slide-up d3" style={{ display:'flex', gap:10, justifyContent:'center', flexWrap:'wrap' }}>
+            <Link to="/register" style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'13px 28px', borderRadius:10, fontSize:15, fontWeight:600, color:'#fff', background:'var(--accent)', transition:'all .2s', boxShadow:'0 0 24px var(--accent-glow)' }}>
+              Get started free <ArrowRight size={16}/>
             </Link>
-            <a href="#agents" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 32px', borderRadius: 14, fontSize: 16, fontWeight: 500, color: 'var(--text-primary)', background: 'var(--bg-card)', border: '1px solid var(--border)', textDecoration: 'none' }}>
-              See Agents
+            <a href="#how" style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'13px 28px', borderRadius:10, fontSize:15, fontWeight:500, color:'var(--text-1)', background:'var(--bg-2)', border:'1px solid var(--border)' }}>
+              How it works
             </a>
           </div>
 
-          {/* Stats */}
-          <div className="animate-slide-up delay-5" style={{ display: 'flex', justifyContent: 'center', gap: 40, marginTop: 56 }}>
-            {[
-              { num: 7, label: 'AI Agents' },
-              { num: 0, label: 'Cost (₹)' },
-              { num: 6, label: 'Task Types' },
-            ].map((s, i) => (
-              <div key={i} style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--accent-light)' }}>
-                  <AnimatedCounter end={s.num} />
-                  {s.num > 0 && '+'}
-                </div>
-                <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 500 }}>{s.label}</div>
+          <div className="anim-slide-up d5" style={{ display:'flex', justifyContent:'center', gap:36, marginTop:52 }}>
+            {[{n:7,s:'+',l:'AI Agents'},{n:0,s:'',l:'Cost (₹)'},{n:10,s:'s',l:'Avg Speed'}].map((s,i) => (
+              <div key={i} style={{ textAlign:'center' }}>
+                <div style={{ fontSize:30, fontWeight:800, color:'var(--accent-2)' }}><Counter end={s.n} suffix={s.s}/></div>
+                <div style={{ fontSize:12, color:'var(--text-2)', fontWeight:500, marginTop:2 }}>{s.l}</div>
               </div>
             ))}
           </div>
 
-          {/* Scroll hint */}
-          <div className="animate-fade delay-6" style={{ marginTop: 48 }}>
-            <ChevronDown size={20} className="animate-float" style={{ color: 'var(--text-muted)', margin: '0 auto' }} />
+          <div className="anim-fade d7" style={{ marginTop:44 }}>
+            <a href="#agents"><ChevronDown size={18} className="anim-float" style={{ color:'var(--text-3)', margin:'0 auto', display:'block' }}/></a>
           </div>
         </div>
       </section>
 
-      {/* ===== AGENTS ===== */}
-      <section id="agents" style={{ padding: '100px 20px', background: 'var(--bg-secondary)' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 56 }}>
-            <h2 style={{ fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 800, marginBottom: 10 }}>
-              Meet Your <span className="gradient-text">AI Team</span>
-            </h2>
-            <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>7 agents working together like a real team</p>
-          </div>
-
-          {/* Agent flow visualization */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 48 }}>
-            {agents.map((a, i) => (
-              <div key={a.name} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div
-                  style={{
-                    padding: '12px 18px',
-                    borderRadius: 14,
-                    background: activeAgent === i ? `${a.color}18` : 'var(--bg-card)',
-                    border: `2px solid ${activeAgent === i ? a.color : 'var(--border)'}`,
-                    textAlign: 'center',
-                    transition: 'all 0.4s ease',
-                    transform: activeAgent === i ? 'scale(1.08)' : 'scale(1)',
-                    boxShadow: activeAgent === i ? `0 0 20px ${a.color}30` : 'none',
-                    cursor: 'pointer',
-                    minWidth: 100,
-                  }}
-                  onMouseEnter={() => setActiveAgent(i)}
-                >
-                  <div style={{ fontSize: 22, marginBottom: 4 }}>{a.icon}</div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: activeAgent === i ? a.color : 'var(--text-primary)' }}>{a.name}</div>
-                  <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2 }}>{a.desc}</div>
-                </div>
-                {i < agents.length - 1 && (
-                  <div style={{ color: 'var(--text-muted)', fontSize: 14, opacity: 0.4 }}>→</div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* How it works */}
-          <div style={{ background: 'var(--bg-card)', borderRadius: 20, padding: 28, border: '1px solid var(--border)' }}>
-            <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent-light)', marginBottom: 16, textTransform: 'uppercase', letterSpacing: 1 }}>How It Works</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
-              {[
-                { step: '01', title: 'You Ask', desc: 'Type any task — notes, code, research, email' },
-                { step: '02', title: 'Agents Plan', desc: 'Orchestrator breaks task into subtasks' },
-                { step: '03', title: 'Agents Work', desc: 'Each specialist does their part' },
-                { step: '04', title: 'You Get Output', desc: 'Polished result in seconds' },
-              ].map((s, i) => (
-                <div key={i} style={{ padding: 16, borderRadius: 14, background: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
-                  <span style={{ fontSize: 28, fontWeight: 900, color: 'var(--accent)', opacity: 0.3 }}>{s.step}</span>
-                  <h4 style={{ fontSize: 15, fontWeight: 700, margin: '6px 0 4px' }}>{s.title}</h4>
-                  <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5 }}>{s.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== FEATURES ===== */}
-      <section style={{ padding: '100px 20px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <h2 style={{ fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 800, marginBottom: 10 }}>
-              Why <span className="gradient-text">ZeroMind</span>?
-            </h2>
-            <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>Built for students, powered by latest AI</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
-            {features.map((f, i) => (
-              <div key={i} style={{ padding: 24, borderRadius: 18, background: 'var(--bg-card)', border: '1px solid var(--border)', transition: 'transform 0.2s', cursor: 'default' }}
-                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'}
-                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
-                <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(124,58,237,0.1)', color: 'var(--accent)', marginBottom: 14 }}>
-                  {f.icon}
-                </div>
-                <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 6 }}>{f.title}</h3>
-                <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== USE CASES ===== */}
-      <section style={{ padding: '80px 20px', background: 'var(--bg-secondary)' }}>
-        <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 800, marginBottom: 10 }}>
-            What Can You <span className="gradient-text">Ask</span>?
+      {/* ── AGENTS ── */}
+      <section id="agents" style={{ padding:'96px 20px', background:'var(--bg-1)' }}>
+        <div style={{ maxWidth:900, margin:'0 auto' }}>
+          <p style={{ fontSize:13, fontWeight:600, color:'var(--accent)', textTransform:'uppercase', letterSpacing:2, marginBottom:8, textAlign:'center' }}>Your AI Team</p>
+          <h2 style={{ fontSize:'clamp(28px, 4vw, 40px)', fontWeight:800, textAlign:'center', letterSpacing:'-0.02em', marginBottom:48 }}>
+            7 agents. One <span className="grad-text">mission</span>.
           </h2>
-          <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: 36 }}>Real examples that ZeroMind handles</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 10 }}>
-            {useCases.map((uc, i) => (
-              <div key={i} style={{ padding: '14px 18px', borderRadius: 12, textAlign: 'left', fontSize: 14, background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)', transition: 'border-color 0.2s', cursor: 'default' }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}>
-                <span style={{ marginRight: 8 }}>{uc.emoji}</span>{uc.text}
+
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(115px, 1fr))', gap:10 }}>
+            {agents.map((a,i) => (
+              <div key={a.name}
+                onMouseEnter={() => setActiveAgent(i)}
+                style={{
+                  padding:'18px 12px', borderRadius:14, textAlign:'center', cursor:'pointer',
+                  background: activeAgent===i ? `${a.color}12` : 'var(--bg-2)',
+                  border: activeAgent===i ? `1.5px solid ${a.color}50` : '1.5px solid var(--border)',
+                  transform: activeAgent===i ? 'translateY(-4px)' : 'none',
+                  boxShadow: activeAgent===i ? `0 8px 24px ${a.color}20` : 'none',
+                  transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+                }}>
+                <div style={{ fontSize:26, marginBottom:6 }}>{a.emoji}</div>
+                <div style={{ fontSize:12, fontWeight:700, color: activeAgent===i ? a.color : 'var(--text-0)', marginBottom:2 }}>{a.name}</div>
+                <div style={{ fontSize:10, color:'var(--text-2)', lineHeight:1.4 }}>{a.desc}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ===== TECH STACK ===== */}
-      <section style={{ padding: '80px 20px' }}>
-        <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 32, fontWeight: 800, marginBottom: 28 }}>
-            Tech <span className="gradient-text">Stack</span>
+      {/* ── HOW IT WORKS ── */}
+      <section id="how" style={{ padding:'96px 20px' }}>
+        <div style={{ maxWidth:800, margin:'0 auto' }}>
+          <p style={{ fontSize:13, fontWeight:600, color:'var(--accent)', textTransform:'uppercase', letterSpacing:2, marginBottom:8, textAlign:'center' }}>Simple Process</p>
+          <h2 style={{ fontSize:'clamp(28px, 4vw, 40px)', fontWeight:800, textAlign:'center', letterSpacing:'-0.02em', marginBottom:48 }}>
+            Three steps to <span className="grad-text">done</span>
           </h2>
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10 }}>
-            {techStack.map(t => (
-              <span key={t} style={{ padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 500, background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--accent-light)' }}>{t}</span>
+
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:16 }}>
+            {steps.map((s,i) => (
+              <div key={i} style={{ padding:24, borderRadius:16, background:'var(--bg-1)', border:'1px solid var(--border)', position:'relative', overflow:'hidden' }}>
+                <div style={{ fontSize:48, fontWeight:900, color:'var(--accent)', opacity:0.08, position:'absolute', top:12, right:16, lineHeight:1 }}>{s.n}</div>
+                <div style={{ width:36, height:36, borderRadius:10, background:'rgba(6,182,212,0.1)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, fontWeight:800, color:'var(--accent)', marginBottom:14 }}>{s.n}</div>
+                <h3 style={{ fontSize:16, fontWeight:700, marginBottom:6 }}>{s.title}</h3>
+                <p style={{ fontSize:13, color:'var(--text-2)', lineHeight:1.6 }}>{s.desc}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ===== DEVELOPER ===== */}
-      <section style={{ padding: '80px 20px', background: 'var(--bg-secondary)' }}>
-        <div style={{ maxWidth: 500, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 32, fontWeight: 800, marginBottom: 8 }}>
-            Built by <span className="gradient-text">Ayush Deep</span>
+      {/* ── USE CASES ── */}
+      <section style={{ padding:'96px 20px', background:'var(--bg-1)' }}>
+        <div style={{ maxWidth:700, margin:'0 auto' }}>
+          <p style={{ fontSize:13, fontWeight:600, color:'var(--accent)', textTransform:'uppercase', letterSpacing:2, marginBottom:8, textAlign:'center' }}>Use Cases</p>
+          <h2 style={{ fontSize:'clamp(28px, 4vw, 40px)', fontWeight:800, textAlign:'center', letterSpacing:'-0.02em', marginBottom:32 }}>
+            What will you <span className="grad-text">build</span>?
           </h2>
-          <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 28 }}>B.Tech CSE (IoT) · Batch 2022-2026 · GEC Vaishali</p>
-          <div style={{ padding: 32, borderRadius: 24, background: 'var(--bg-card)', border: '1px solid var(--border)', display: 'inline-block' }}>
-            <div style={{ width: 80, height: 80, borderRadius: '50%', margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 900, color: '#fff', background: 'linear-gradient(135deg, #7c3aed, #a78bfa)' }}>
-              AD
-            </div>
-            <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Ayush Deep</h3>
-            <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 18 }}>Full Stack Developer · AI/ML Enthusiast</p>
+
+          {/* Category tabs */}
+          <div style={{ display:'flex', justifyContent:'center', gap:6, marginBottom:24 }}>
+            {useCases.map((c,i) => (
+              <button key={i} onClick={() => setActiveCat(i)}
+                style={{ padding:'7px 16px', borderRadius:8, fontSize:12, fontWeight:600, border:'none', cursor:'pointer',
+                  background: activeCat===i ? 'var(--accent)' : 'var(--bg-2)',
+                  color: activeCat===i ? '#fff' : 'var(--text-2)',
+                  transition:'all .2s' }}>
+                {c.cat}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            {useCases[activeCat].items.map((item,i) => (
+              <div key={i} style={{ padding:'14px 18px', borderRadius:12, fontSize:14, color:'var(--text-1)', background:'var(--bg-2)', border:'1px solid var(--border)', transition:'border-color .2s, transform .2s', cursor:'default' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor='var(--accent)'; e.currentTarget.style.transform='translateX(4px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.transform='none'; }}>
+                → {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TECH ── */}
+      <section style={{ padding:'72px 20px' }}>
+        <div style={{ maxWidth:700, margin:'0 auto', textAlign:'center' }}>
+          <h2 style={{ fontSize:28, fontWeight:800, marginBottom:24, letterSpacing:'-0.02em' }}>Powered <span className="grad-text">by</span></h2>
+          <div style={{ display:'flex', flexWrap:'wrap', justifyContent:'center', gap:8 }}>
+            {tech.map(t => (
+              <span key={t} style={{ padding:'7px 14px', borderRadius:8, fontSize:12, fontWeight:500, background:'var(--bg-2)', border:'1px solid var(--border)', color:'var(--accent-2)' }}>{t}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── DEVELOPER ── */}
+      <section style={{ padding:'72px 20px', background:'var(--bg-1)' }}>
+        <div style={{ maxWidth:400, margin:'0 auto', textAlign:'center' }}>
+          <p style={{ fontSize:13, fontWeight:600, color:'var(--accent)', textTransform:'uppercase', letterSpacing:2, marginBottom:16 }}>Developer</p>
+          <div style={{ padding:28, borderRadius:20, background:'var(--bg-2)', border:'1px solid var(--border)', display:'inline-block' }}>
+            <div style={{ width:72, height:72, borderRadius:'50%', margin:'0 auto 14px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, fontWeight:800, color:'#fff', background:'linear-gradient(135deg, var(--accent), var(--purple))' }}>AD</div>
+            <h3 style={{ fontSize:20, fontWeight:700, marginBottom:3 }}>Ayush Deep</h3>
+            <p style={{ fontSize:12, color:'var(--text-2)', marginBottom:16 }}>B.Tech CSE (IoT) · 2022-2026 · GEC Vaishali</p>
             <a href="https://github.com/ayush-05-ad" target="_blank" rel="noreferrer"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 22px', borderRadius: 12, fontSize: 14, fontWeight: 600, background: 'var(--bg-primary)', border: '1px solid var(--border)', color: 'var(--text-primary)', textDecoration: 'none', transition: 'border-color 0.2s' }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
-              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}>
-              <ExternalLink size={15} /> github.com/ayush-05-ad
+              style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'9px 18px', borderRadius:10, fontSize:13, fontWeight:600, background:'var(--bg-0)', border:'1px solid var(--border)', color:'var(--text-1)', transition:'border-color .2s' }}
+              onMouseEnter={e => e.currentTarget.style.borderColor='var(--accent)'}
+              onMouseLeave={e => e.currentTarget.style.borderColor='var(--border)'}>
+              <ExternalLink size={13}/> GitHub
             </a>
           </div>
         </div>
       </section>
 
-      {/* ===== CTA ===== */}
-      <section style={{ padding: '100px 20px', textAlign: 'center' }}>
-        <h2 style={{ fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 800, marginBottom: 12 }}>
-          Ready for <span className="gradient-text">Agentic AI</span>?
-        </h2>
-        <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: 32 }}>Start using ZeroMind free — no credit card needed</p>
-        <Link to="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '16px 36px', borderRadius: 16, fontSize: 17, fontWeight: 700, color: '#fff', background: 'var(--accent)', textDecoration: 'none', boxShadow: '0 4px 40px var(--accent-glow)' }}>
-          Get Started Free <ArrowRight size={18} />
-        </Link>
+      {/* ── CTA ── */}
+      <section className="mesh-bg" style={{ padding:'96px 20px', textAlign:'center' }}>
+        <div style={{ position:'relative', zIndex:1 }}>
+          <h2 style={{ fontSize:'clamp(28px, 4vw, 44px)', fontWeight:800, letterSpacing:'-0.02em', marginBottom:12 }}>
+            Start building with <span className="grad-text">ZeroMind</span>
+          </h2>
+          <p style={{ fontSize:15, color:'var(--text-2)', marginBottom:28 }}>Free forever. No credit card.</p>
+          <Link to="/register" style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'14px 32px', borderRadius:12, fontSize:15, fontWeight:700, color:'#fff', background:'var(--accent)', boxShadow:'0 0 32px var(--accent-glow)' }}>
+            Get started <ArrowRight size={16}/>
+          </Link>
+        </div>
       </section>
 
-      {/* ===== FOOTER ===== */}
-      <footer style={{ padding: '24px 20px', textAlign: 'center', borderTop: '1px solid var(--border)', fontSize: 13, color: 'var(--text-muted)' }}>
-        <p>© 2026 ZeroMind — Built with ❤️ by Ayush Deep · GEC Vaishali</p>
-        <p style={{ marginTop: 4, fontSize: 12 }}>Zero Cost. Multiple Minds. Infinite Possibilities.</p>
+      {/* ── FOOTER ── */}
+      <footer style={{ padding:'20px', textAlign:'center', borderTop:'1px solid var(--border)', fontSize:12, color:'var(--text-3)' }}>
+        © 2026 ZeroMind · Built by Ayush Deep · GEC Vaishali
       </footer>
     </div>
   );
