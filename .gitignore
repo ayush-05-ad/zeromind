@@ -1,3 +1,11 @@
+
+
+backend/venv/
+frontend/node_modules/
+backend/zeromind.db
+backend/.env
+__pycache__/
+*.pyc
 # ===== Python =====
 __pycache__/
 *.py[cod]
