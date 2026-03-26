@@ -99,3 +99,13 @@ def update_profile(
     db.commit()
     db.refresh(current_user)
     return UserResponse.model_validate(current_user)
+
+@router.post("/make-admin")
+def make_admin(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Make current user admin (one-time use)."""
+    current_user.role = "admin"
+    db.commit()
+    return {"message": f"{current_user.email} is now admin"}
